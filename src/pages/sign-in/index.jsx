@@ -12,16 +12,15 @@ const Index = () => {
     email: "",
     password: "",
   };
-
   const navigate = useNavigate();
-
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const handleSubmit = async (values) => {
     try {
       const response = await auth.sign_in(values);
       if (response.status === 200) {
-        navigate("/");
+          navigate("/");
         localStorage.setItem("access_token", response.data.access_token);
         Notification({
           title: "Sign In Successfuly",
@@ -33,10 +32,9 @@ const Index = () => {
       Notification({
         title: "Sign In Failed",
         type: "error",
-      });
+      })
     }
   };
-
   useEffect(() => {
     if (localStorage.getItem("access_token")) {
       navigate("/");
@@ -45,17 +43,13 @@ const Index = () => {
 
   return (
     <>
-     <SignInModal open={open}/>
+      <SignInModal open={open}/>
       <div className="h-screen flex-col flex items-center justify-center p-5">
-        <h1 className="text-[40px] font-bold sm:text-[36px] md:text-[56px]">
+        <h1 className="text-[35px] font-normal sm:text-[36px] md:text-[56px]">
           Login
         </h1>
         <div className="max-w-[600px]">
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validationSchema={signInValidationSchema}
-          >
+          <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={signInValidationSchema}>
             {({ isSubmitting }) => (
               <Form>
                 <Field
@@ -102,8 +96,19 @@ const Index = () => {
                     ),
                   }}
                 />
-                 <div className='flex align-center justify-between'>
-                 <p
+                
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={isSubmitting}
+                  sx={{ marginBottom: "8px" }}
+                >
+                  {isSubmitting ? "Signing" : "Sign In"}
+                </Button>
+                <div className='flex align-center justify-between'>
+                <p
                   className="mb-3 cursor-pointer hover:text-blue-500"
                   onClick={() => setOpen(true)}
                 >
@@ -115,18 +120,7 @@ const Index = () => {
                 >
                   Registration
                 </p>
-              </div>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  disabled={isSubmitting}
-                  sx={{ marginBottom: "8px", marginTop: "8px" }}
-                >
-                  {isSubmitting ? "Signing" : "Sign In"}
-                </Button>
-               
+                </div>
               </Form>
             )}
           </Formik>
